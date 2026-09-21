@@ -22,3 +22,5 @@
 @media(max-width:900px){.adminheadingactions{justify-content:flex-start}.stockrowfull{grid-template-columns:1fr 90px}.stockrowfull .varianttoggle{grid-column:1/-1}.specrow{grid-template-columns:100px 1fr}}
 
 .sizes button{display:grid;place-items:center;gap:1px}.sizes button small{font-size:8px;line-height:1;text-transform:none;letter-spacing:0}.sizes button.soldout{opacity:.42;text-decoration:line-through;cursor:not-allowed}.qty button:disabled{opacity:.35;cursor:not-allowed}.stockwarning{margin-top:9px;color:#8c2d26;font-size:12px;line-height:1.4}.cartstock{margin-top:5px;font-size:11px;color:var(--muted)}
+
+.viewbaglink{display:inline-block;margin-top:10px;font-size:12px;text-decoration:underline;color:var(--muted)}
