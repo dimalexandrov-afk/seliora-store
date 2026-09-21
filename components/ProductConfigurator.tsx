@@ -3,7 +3,7 @@
 import {useMemo,useState} from 'react';
 import {useCart} from './CartProvider';
 
-type Variant={id:string;sku:string;color_name:string;color_hex:string|null;size_label:string;active:boolean};
+type Variant={id:string;sku:string;color_name:string;color_hex:string|null;size_label:string;active:boolean;inventory?:{quantity_on_hand:number;quantity_reserved:number}[]|null};
 type Img={id:string;url:string;alt:string;colorName:string|null;sortOrder:number;isPrimary:boolean};
 
 export default function ProductConfigurator({
@@ -11,6 +11,7 @@ export default function ProductConfigurator({
 }:{
   locale:string;slug:string;name:string;price:number;variants:Variant[];images:Img[];fallbackClass:string
 }){
+  const stockOf=(v:Variant)=>{const row=Array.isArray(v.inventory)?v.inventory[0]:null;return Math.max(0,(row?.quantity_on_hand??0)-(row?.quantity_reserved??0))};
   const active=variants.filter(v=>v.active);
   const colors=useMemo(()=>{
     const map=new Map<string,string|null>();
@@ -48,9 +49,9 @@ export default function ProductConfigurator({
     <div className="productinfo">
       {colors.length>0&&<><div className="optionlabel">{bg?'Цвят':'Color'}: <strong>{color}</strong></div><div className="colors">{colors.map(c=><button key={c.name} className={color===c.name?'selected':''} onClick={()=>chooseColor(c.name)} title={c.name}><span style={{background:c.hex||'#777'}}/>{c.name}</button>)}</div></>}
       <div className="optionlabel">{bg?'Размер':'Size'}</div>
-      <div className="sizes">{selectedSizes.map(s=><button key={s} className={effectiveSize===s?'selected':''} onClick={()=>setSize(s)}>{s}</button>)}</div>
-      <button className="btn primary addbtn" disabled={!variant} onClick={()=>variant&&add({variantId:variant.id,sku:variant.sku,productName:name,slug,color:variant.color_name,size:variant.size_label,price})}>{bg?'Добави в кошницата':'Add to bag'}</button>
-      <div className="microcopy">{bg?'Всички качени снимки са достъпни в галерията. При избор на цвят прескачаме към първата снимка за него.':'All uploaded images remain available in the gallery. Choosing a color jumps to its first matching image.'}</div>
+      <div className="sizes">{selectedSizes.map(s=>{const sv=active.find(v=>v.color_name===color&&v.size_label===s);const available=sv?stockOf(sv):0;return <button key={s} className={(effectiveSize===s?'selected ':'')+(available<=0?'soldout':'')} disabled={available<=0} onClick={()=>setSize(s)}>{s}{available<=0?<small>{bg?'Изчерпан':'Out'}</small>:available<=3?<small>{bg?'Последни '+available:'Only '+available}</small>:null}</button>})}</div>
+      <button className="btn primary addbtn" disabled={!variant||stockOf(variant)<=0} onClick={()=>variant&&stockOf(variant)>0&&add({variantId:variant.id,sku:variant.sku,productName:name,slug,color:variant.color_name,size:variant.size_label,price,maxQty:stockOf(variant)})}>{variant&&stockOf(variant)<=0?(bg?'Изчерпан':'Out of stock'):(bg?'Добави в кошницата':'Add to bag')}</button>
+      <div className="microcopy">{variant&&stockOf(variant)>0?(stockOf(variant)<=3?(bg?'Остават '+stockOf(variant)+' броя.':'Only '+stockOf(variant)+' left.'):(bg?'В наличност':'In stock')):(bg?'Избраният вариант не е наличен.':'The selected variant is unavailable.')}</div>
     </div>
   </div>
 }
