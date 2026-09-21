@@ -1,0 +1,2 @@
+import {notFound} from 'next/navigation';import LocalizedHeader from '@/components/LocalizedHeader';import LocalizedFooter from '@/components/LocalizedFooter';import {isLocale} from '@/lib/i18n';
+export default async function LocaleLayout({children,params}:{children:React.ReactNode,params:Promise<{locale:string}>}){const {locale}=await params;if(!isLocale(locale))notFound();return <><LocalizedHeader locale={locale}/>{children}<LocalizedFooter locale={locale}/></>}
