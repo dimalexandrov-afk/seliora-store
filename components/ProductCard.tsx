@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 
-type Img={id:string;url:string;alt:string;colorName:string|null;isPrimary:boolean;sortOrder:number};
+type Img={id:string;url:string;alt:string;colorName:string|null;isPrimary:boolean;isHover:boolean;sortOrder:number};
 
 export default function ProductCard({
   locale,slug,name,meta,regular,price,images,fallbackClass
@@ -10,8 +10,8 @@ export default function ProductCard({
   locale:string;slug:string;name:string;meta:string|null;regular:string;price:string;images:Img[];fallbackClass:string
 }){
   const ordered=[...images].sort((a,b)=>(b.isPrimary?1:0)-(a.isPrimary?1:0)||a.sortOrder-b.sortOrder);
-  const first=ordered[0];
-  const second=ordered[1];
+  const first=ordered.find(i=>i.isPrimary)??ordered[0];
+  const second=ordered.find(i=>i.isHover&&i.id!==first?.id)??null;
 
   return <article className="card catalogcard">
     <Link className="catalogmedia hoverswap" href={'/'+locale+'/product/'+slug} aria-label={name}>
