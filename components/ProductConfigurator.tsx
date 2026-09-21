@@ -28,6 +28,7 @@ export default function ProductConfigurator({
   const initialInStock=initialVariants.filter(v=>stockOf(v)>0).map(v=>v.size_label);
   const[size,setSize]=useState(initialInStock.includes('L')?'L':initialInStock[0]??(initialSizes.includes('L')?'L':initialSizes[0]??''));
   const[index,setIndex]=useState(0);
+  const[qty,setQty]=useState(1);
   const[added,setAdded]=useState(false);
   const{add}=useCart();
   const bg=locale==='bg';
@@ -45,13 +46,14 @@ export default function ProductConfigurator({
     if(!variant)return;
     const available=stockOf(variant);
     if(available<=0)return;
-    add({variantId:variant.id,sku:variant.sku,productName:name,slug,color:variant.color_name,size:variant.size_label,price,maxQty:available});
+    add({variantId:variant.id,sku:variant.sku,productName:name,slug,color:variant.color_name,size:variant.size_label,price,maxQty:available},qty);
     setAdded(true);
     window.setTimeout(()=>setAdded(false),1800);
   }
 
   function chooseColor(nextColor:string){
     setAdded(false);
+    setQty(1);
     setColor(nextColor);
     const nextVariants=active.filter(v=>v.color_name===nextColor);
     const nextSizes=[...new Set(nextVariants.map(v=>v.size_label))];
@@ -68,7 +70,8 @@ export default function ProductConfigurator({
     <div className="productinfo">
       {colors.length>0&&<><div className="optionlabel">{bg?'Цвят':'Color'}: <strong>{color}</strong></div><div className="colors">{colors.map(c=><button key={c.name} className={color===c.name?'selected':''} onClick={()=>chooseColor(c.name)} title={c.name}><span style={{background:c.hex||'#777'}}/>{c.name}</button>)}</div></>}
       <div className="optionlabel">{bg?'Размер':'Size'}</div>
-      <div className="sizes">{selectedSizes.map(s=>{const sv=active.find(v=>v.color_name===color&&v.size_label===s);const available=sv?stockOf(sv):0;return <button key={s} className={(effectiveSize===s?'selected ':'')+(available<=0?'soldout':'')} disabled={available<=0} onClick={()=>setSize(s)}>{s}{available<=0?<small>{bg?'Изчерпан':'Out'}</small>:available<=3?<small>{bg?'Последни '+available:'Only '+available}</small>:null}</button>})}</div>
+      <div className="sizes">{selectedSizes.map(s=>{const sv=active.find(v=>v.color_name===color&&v.size_label===s);const available=sv?stockOf(sv):0;return <button key={s} className={(effectiveSize===s?'selected ':'')+(available<=0?'soldout':'')} disabled={available<=0} onClick={()=>{setSize(s);setQty(1);setAdded(false)}}>{s}{available<=0?<small>{bg?'Изчерпан':'Out'}</small>:available<=3?<small>{bg?'Последни '+available:'Only '+available}</small>:null}</button>})}</div>
+      {variant&&stockOf(variant)>0&&<div className="purchasecontrols"><div className="quantitypicker"><button type="button" aria-label={bg?'Намали бройката':'Decrease quantity'} disabled={qty<=1} onClick={()=>setQty(q=>Math.max(1,q-1))}>−</button><span>{qty}</span><button type="button" aria-label={bg?'Увеличи бройката':'Increase quantity'} disabled={qty>=stockOf(variant)} onClick={()=>setQty(q=>Math.min(stockOf(variant),q+1))}>+</button></div></div>}
       <button type="button" className="btn primary addbtn" disabled={!variant||stockOf(variant)<=0} onClick={addSelected}>{added?(bg?'Добавено ✓':'Added ✓'):(variant&&stockOf(variant)<=0?(bg?'Изчерпан':'Out of stock'):(bg?'Добави в кошницата':'Add to bag'))}</button>{added&&<Link className="viewbaglink" href={'/'+locale+'/cart'}>{bg?'Виж кошницата →':'View bag →'}</Link>}
       <div className="microcopy">{variant&&stockOf(variant)>0?(stockOf(variant)<=3?(bg?'Остават '+stockOf(variant)+' броя.':'Only '+stockOf(variant)+' left.'):(bg?'В наличност':'In stock')):(bg?'Избраният вариант не е наличен.':'The selected variant is unavailable.')}</div>
     </div>
