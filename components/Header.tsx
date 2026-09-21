@@ -1,0 +1,2 @@
+import Link from 'next/link';
+export default function Header(){return <><div className="topbar">SELIORA LAUNCH — INTRODUCTORY PRICES COMING SOON</div><div className="wrap"><nav className="nav"><Link className="brand" href="/">SELIORA</Link><div className="navlinks"><Link href="/shop">Shop</Link><Link href="/our-story">Our Story</Link><Link href="/fit-guide">Fit Guide</Link><Link href="/faq">FAQ</Link></div><div>Bag (0)</div></nav></div></>}
