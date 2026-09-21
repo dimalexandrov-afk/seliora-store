@@ -46,7 +46,8 @@ export default function ProductConfigurator({
     if(!variant)return;
     const available=stockOf(variant);
     if(available<=0)return;
-    add({variantId:variant.id,sku:variant.sku,productName:name,slug,color:variant.color_name,size:variant.size_label,price,maxQty:available},qty);
+    const cartImage=ordered.find(i=>i.colorName===variant.color_name)?.url??ordered.find(i=>i.isPrimary)?.url??ordered[0]?.url;
+    add({variantId:variant.id,sku:variant.sku,productName:name,slug,color:variant.color_name,size:variant.size_label,imageUrl:cartImage,price,maxQty:available},qty);
     setAdded(true);
     window.setTimeout(()=>setAdded(false),1800);
   }
