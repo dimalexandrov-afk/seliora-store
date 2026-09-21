@@ -1,0 +1,1 @@
+export default function Page(){return <main className="wrap"><div className="pagehead"><div className="eyebrow">FAQ</div><h1>Questions, answered simply.</h1><p className="lead">Shipping, returns, sizing, materials and care information will be finalized before launch.</p></div></main>}
