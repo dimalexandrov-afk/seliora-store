@@ -24,3 +24,5 @@
 .sizes button{display:grid;place-items:center;gap:1px}.sizes button small{font-size:8px;line-height:1;text-transform:none;letter-spacing:0}.sizes button.soldout{opacity:.42;text-decoration:line-through;cursor:not-allowed}.qty button:disabled{opacity:.35;cursor:not-allowed}.stockwarning{margin-top:9px;color:#8c2d26;font-size:12px;line-height:1.4}.cartstock{margin-top:5px;font-size:11px;color:var(--muted)}
 
 .viewbaglink{display:inline-block;margin-top:10px;font-size:12px;text-decoration:underline;color:var(--muted)}
+
+.purchasecontrols{margin:6px 0 12px}.quantitypicker{display:inline-grid;grid-template-columns:42px 52px 42px;align-items:center;border:1px solid var(--line);background:var(--surface)}.quantitypicker button{height:42px;border:0;background:transparent;font-size:20px;cursor:pointer}.quantitypicker button:disabled{opacity:.35;cursor:not-allowed}.quantitypicker span{text-align:center;font-weight:600}
