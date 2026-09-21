@@ -1,10 +1,14 @@
 export type StoreImage={id:string;storage_path:string;alt_text:string|null;sort_order:number;is_primary:boolean;is_hover:boolean;color_name:string|null};
+export type StoreVariant={
+  id:string;sku:string;color_name:string;color_hex:string|null;size_label:string;active:boolean;
+  inventory?:{quantity_on_hand:number;quantity_reserved:number}[]|null
+};
 export type StoreProduct={
   id:string;slug:string;name:string;subtitle:string|null;description:string|null;denier:number|null;finish:string|null;
   base_price_eur:number|null;launch_price_eur:number|null;sort_order:number;
   toe_type:string|null;waistband_type:string|null;material_composition:string|null;care_instructions:string|null;
   product_images?:StoreImage[];
-  product_variants?:{id:string;sku:string;color_name:string;color_hex:string|null;size_label:string;active:boolean}[]
+  product_variants?:StoreVariant[]
 };
 
 const SUPABASE_URL='https://yclgswebvkiilmescehw.supabase.co';
@@ -20,7 +24,7 @@ async function supabaseFetch(path:string){
   return res.json();
 }
 
-const selectFields='id,slug,name,subtitle,description,denier,finish,base_price_eur,launch_price_eur,sort_order,toe_type,waistband_type,material_composition,care_instructions,product_images(id,storage_path,alt_text,sort_order,is_primary,is_hover,color_name),product_variants(id,sku,color_name,color_hex,size_label,active)';
+const selectFields='id,slug,name,subtitle,description,denier,finish,base_price_eur,launch_price_eur,sort_order,toe_type,waistband_type,material_composition,care_instructions,product_images(id,storage_path,alt_text,sort_order,is_primary,is_hover,color_name),product_variants(id,sku,color_name,color_hex,size_label,active,inventory(quantity_on_hand,quantity_reserved))';
 
 export async function getProducts():Promise<StoreProduct[]>{
   try{return await supabaseFetch('products?select='+selectFields+'&status=eq.active&order=sort_order.asc&product_images.order=sort_order.asc')}
@@ -34,6 +38,10 @@ export async function getProduct(slug:string):Promise<StoreProduct|null>{
   }catch{return null}
 }
 
+export function availableStock(v:StoreVariant){
+  const row=Array.isArray(v.inventory)?v.inventory[0]:null;
+  return Math.max(0,(row?.quantity_on_hand??0)-(row?.quantity_reserved??0));
+}
 export function money(v:number|null|undefined){
   return typeof v==='number'?new Intl.NumberFormat('en-IE',{style:'currency',currency:'EUR'}).format(v):'—'
 }
