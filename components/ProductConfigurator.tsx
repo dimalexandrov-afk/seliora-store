@@ -3,7 +3,8 @@
 import {useMemo,useState} from 'react';
 import {useCart} from './CartProvider';
 
-type Variant={id:string;sku:string;color_name:string;color_hex:string|null;size_label:string;active:boolean;inventory?:{quantity_on_hand:number;quantity_reserved:number}[]|null};
+type InventoryRow={quantity_on_hand:number;quantity_reserved:number};
+type Variant={id:string;sku:string;color_name:string;color_hex:string|null;size_label:string;active:boolean;inventory?:InventoryRow|InventoryRow[]|null};
 type Img={id:string;url:string;alt:string;colorName:string|null;sortOrder:number;isPrimary:boolean};
 
 export default function ProductConfigurator({
@@ -11,7 +12,7 @@ export default function ProductConfigurator({
 }:{
   locale:string;slug:string;name:string;price:number;variants:Variant[];images:Img[];fallbackClass:string
 }){
-  const stockOf=(v:Variant)=>{const row=Array.isArray(v.inventory)?v.inventory[0]:null;return Math.max(0,(row?.quantity_on_hand??0)-(row?.quantity_reserved??0))};
+  const stockOf=(v:Variant)=>{const row=Array.isArray(v.inventory)?v.inventory[0]:v.inventory;return Math.max(0,(row?.quantity_on_hand??0)-(row?.quantity_reserved??0))};
   const active=variants.filter(v=>v.active);
   const colors=useMemo(()=>{
     const map=new Map<string,string|null>();
