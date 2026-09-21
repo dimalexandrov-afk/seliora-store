@@ -1,0 +1,1 @@
+export default function Page(){return <main className="wrap"><div className="pagehead"><div className="eyebrow">Our story</div><h1>Modern hosiery, without unnecessary labels.</h1><p className="lead">SELIORA is being built around a simple idea: judge hosiery by its fit, finish, feel and quality. The first collection is currently in product testing.</p></div></main>}
