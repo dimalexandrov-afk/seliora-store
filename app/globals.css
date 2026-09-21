@@ -26,3 +26,5 @@
 .viewbaglink{display:inline-block;margin-top:10px;font-size:12px;text-decoration:underline;color:var(--muted)}
 
 .purchasecontrols{margin:6px 0 12px}.quantitypicker{display:inline-grid;grid-template-columns:42px 52px 42px;align-items:center;border:1px solid var(--line);background:var(--surface)}.quantitypicker button{height:42px;border:0;background:transparent;font-size:20px;cursor:pointer}.quantitypicker button:disabled{opacity:.35;cursor:not-allowed}.quantitypicker span{text-align:center;font-weight:600}
+
+.cartthumb{overflow:hidden}.cartthumb img{width:100%;height:100%;object-fit:cover;display:block}.unitprice,.linetotal{display:grid;gap:3px;justify-items:end}.unitprice span,.linetotal span{font-size:10px;font-weight:400;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}.linetotal{margin-top:10px}.cartprice .textbtn{margin-top:14px}
