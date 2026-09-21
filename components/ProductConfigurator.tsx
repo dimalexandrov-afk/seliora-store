@@ -20,14 +20,18 @@ export default function ProductConfigurator({
   },[variants]);
   const ordered=useMemo(()=>[...images].sort((a,b)=>(b.isPrimary?1:0)-(a.isPrimary?1:0)||a.sortOrder-b.sortOrder),[images]);
   const[color,setColor]=useState(colors[0]?.name??'');
-  const initialSizes=[...new Set(active.filter(v=>v.color_name===(colors[0]?.name??'')).map(v=>v.size_label))];
-  const[size,setSize]=useState(initialSizes.includes('L')?'L':initialSizes[0]??'');
+  const firstColor=colors[0]?.name??'';
+  const initialVariants=active.filter(v=>v.color_name===firstColor);
+  const initialSizes=[...new Set(initialVariants.map(v=>v.size_label))];
+  const initialInStock=initialVariants.filter(v=>stockOf(v)>0).map(v=>v.size_label);
+  const[size,setSize]=useState(initialInStock.includes('L')?'L':initialInStock[0]??(initialSizes.includes('L')?'L':initialSizes[0]??''));
   const[index,setIndex]=useState(0);
   const{add}=useCart();
   const bg=locale==='bg';
 
   const selectedSizes=[...new Set(active.filter(v=>v.color_name===color).map(v=>v.size_label))];
-  const effectiveSize=selectedSizes.includes(size)?size:(selectedSizes.includes('L')?'L':selectedSizes[0]??'');
+  const inStockSizes=active.filter(v=>v.color_name===color&&stockOf(v)>0).map(v=>v.size_label);
+  const effectiveSize=selectedSizes.includes(size)?size:(inStockSizes.includes('L')?'L':inStockSizes[0]??(selectedSizes.includes('L')?'L':selectedSizes[0]??''));
   const variant=active.find(v=>v.color_name===color&&v.size_label===effectiveSize);
   const current=ordered[Math.min(index,Math.max(ordered.length-1,0))];
 
@@ -36,8 +40,10 @@ export default function ProductConfigurator({
 
   function chooseColor(nextColor:string){
     setColor(nextColor);
-    const nextSizes=[...new Set(active.filter(v=>v.color_name===nextColor).map(v=>v.size_label))];
-    setSize(nextSizes.includes('L')?'L':nextSizes[0]??'');
+    const nextVariants=active.filter(v=>v.color_name===nextColor);
+    const nextSizes=[...new Set(nextVariants.map(v=>v.size_label))];
+    const nextInStock=nextVariants.filter(v=>stockOf(v)>0).map(v=>v.size_label);
+    setSize(nextInStock.includes('L')?'L':nextInStock[0]??(nextSizes.includes('L')?'L':nextSizes[0]??''));
     const firstMatching=ordered.findIndex(i=>i.colorName===nextColor);
     if(firstMatching>=0)setIndex(firstMatching);
   }
