@@ -1,7 +1,7 @@
 export type StoreImage={id:string;storage_path:string;alt_text:string|null;sort_order:number;is_primary:boolean;is_hover:boolean;color_name:string|null};
 export type StoreVariant={
   id:string;sku:string;color_name:string;color_hex:string|null;size_label:string;active:boolean;
-  inventory?:{quantity_on_hand:number;quantity_reserved:number}[]|null
+  inventory?:{quantity_on_hand:number;quantity_reserved:number}|{quantity_on_hand:number;quantity_reserved:number}[]|null
 };
 export type StoreProduct={
   id:string;slug:string;name:string;subtitle:string|null;description:string|null;denier:number|null;finish:string|null;
@@ -39,7 +39,7 @@ export async function getProduct(slug:string):Promise<StoreProduct|null>{
 }
 
 export function availableStock(v:StoreVariant){
-  const row=Array.isArray(v.inventory)?v.inventory[0]:null;
+  const row=Array.isArray(v.inventory)?v.inventory[0]:v.inventory;
   return Math.max(0,(row?.quantity_on_hand??0)-(row?.quantity_reserved??0));
 }
 export function money(v:number|null|undefined){
