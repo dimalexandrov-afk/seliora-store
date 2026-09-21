@@ -2,7 +2,7 @@
 import {createContext,useContext,useEffect,useMemo,useState} from 'react';
 
 export type CartItem={
-  variantId:string;sku:string;productName:string;slug:string;color:string;size:string;
+  variantId:string;sku:string;productName:string;slug:string;color:string;size:string;imageUrl?:string;
   price:number;qty:number;maxQty:number
 };
 type CartContextValue={
