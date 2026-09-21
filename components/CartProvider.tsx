@@ -7,7 +7,7 @@ export type CartItem={
 };
 type CartContextValue={
   items:CartItem[];count:number;subtotal:number;
-  add:(item:Omit<CartItem,'qty'>)=>void;
+  add:(item:Omit<CartItem,'qty'|'maxQty'> & {maxQty?:number})=>void;
   remove:(variantId:string)=>void;
   setQty:(variantId:string,qty:number)=>void;
   setMaxQty:(variantId:string,maxQty:number)=>void;
@@ -25,10 +25,11 @@ export function CartProvider({children}:{children:React.ReactNode}){
     count:items.reduce((s,i)=>s+i.qty,0),
     subtotal:items.reduce((s,i)=>s+i.qty*i.price,0),
     add:item=>setItems(current=>{
-      if(item.maxQty<=0)return current;
+      const maxQty=item.maxQty??99;
+      if(maxQty<=0)return current;
       const found=current.find(x=>x.variantId===item.variantId);
-      if(found)return current.map(x=>x.variantId===item.variantId?{...x,maxQty:item.maxQty,qty:Math.min(x.qty+1,item.maxQty)}:x);
-      return [...current,{...item,qty:1}]
+      if(found)return current.map(x=>x.variantId===item.variantId?{...x,maxQty,qty:Math.min(x.qty+1,maxQty)}:x);
+      return [...current,{...item,maxQty,qty:1}]
     }),
     remove:id=>setItems(current=>current.filter(x=>x.variantId!==id)),
     setQty:(id,qty)=>setItems(current=>current.flatMap(x=>{
