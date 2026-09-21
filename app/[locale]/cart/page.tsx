@@ -32,7 +32,7 @@ export default function CartPage(){
       </div>
       <div className="cartprice"><div className="unitprice"><span>{bg?'Ед. цена':'Unit price'}</span><strong>€{i.price.toFixed(2)}</strong></div><div className="linetotal"><span>{bg?'Общо':'Total'}</span><strong>{i.maxQty>0?'€'+(i.price*i.qty).toFixed(2):'—'}</strong></div><button className="textbtn" onClick={()=>remove(i.variantId)}>{bg?'Премахни':'Remove'}</button></div>
     </div>)}</div>
-    <aside className="summary"><div className="eyebrow">{bg?'Общо':'Summary'}</div><div className="summaryline"><span>{bg?'Междинна сума':'Subtotal'}</span><strong>€{subtotal.toFixed(2)}</strong></div><p>{bg?'Количествата се проверяват спрямо текущата наличност. Доставка и плащане ще бъдат активирани преди официалния старт.':'Quantities are checked against live inventory. Shipping and payment will be enabled before the official launch.'}</p><button className="btn primary addbtn" disabled>{bg?'Checkout скоро':'Checkout coming soon'}</button></aside>
+    <aside className="summary"><div className="eyebrow">{bg?'Общо':'Summary'}</div><div className="summaryline"><span>{bg?'Междинна сума':'Subtotal'}</span><strong>€{subtotal.toFixed(2)}</strong></div><p>{bg?'Количествата се проверяват спрямо текущата наличност. Онлайн плащането ще бъде добавено по-късно.':'Quantities are checked against live inventory. Online payment will be added later.'}</p><Link className="btn primary addbtn" href={'/'+locale+'/checkout'}>{bg?'Към checkout':'Checkout'}</Link></aside>
     </div>}
   </main>
 }
